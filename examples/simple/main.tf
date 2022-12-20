@@ -12,7 +12,11 @@
 *   * Creates Security group and assigns it to the endpoint
 *   * AWS Route53 private zone and creates needed records inside
 */
+
 resource "aws_vpc" "this" {
+  #checkov:skip=CKV2_AWS_11:Only a simple example, so additional security configuration should be added for production usage
+  #checkov:skip=CKV2_AWS_12:Only a simple example, so additional security configuration should be added for production usage
+
   cidr_block = "192.168.0.0/16"
 }
 
@@ -23,6 +27,9 @@ resource "aws_subnet" "this" {
 
 module "snowflake_privatelink_aws" {
   source = "../../"
+
+  #checkov:skip=CKV2_AWS_38:This is private hosted zone, so this check seems like a false-positive
+  #checkov:skip=CKV2_AWS_39:Query logging configuration should be handled outside of the basic module
 
   name       = "snowflake"
   attributes = ["privatelink"]
