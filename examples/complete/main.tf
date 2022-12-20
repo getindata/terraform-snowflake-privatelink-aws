@@ -64,7 +64,7 @@ resource "aws_cloudwatch_log_group" "this" {
 
 # Example CloudWatch log resource policy to allow Route53 to write logs
 # to any log group under /aws/route53/*
-data "aws_iam_policy_document" "route53-query-logging-policy" {
+data "aws_iam_policy_document" "this" {
   statement {
     actions = [
       "logs:CreateLogStream",
@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "route53-query-logging-policy" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "this" {
-  policy_document = data.aws_iam_policy_document.route53-query-logging-policy.json
+  policy_document = data.aws_iam_policy_document.this.json
   policy_name     = "route53-query-logging-policy"
 }
 
