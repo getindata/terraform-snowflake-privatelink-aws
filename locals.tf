@@ -1,7 +1,14 @@
 locals {
-  # Get a name from the descriptor. If not available, use default naming convention.
-  # Trim and replace function are used to avoid bare delimiters on both ends of the name and situation of adjacent delimiters.
+  enabled = module.this.enabled ? 1 : 0
+
+  vpc_cidr_enabled = module.this.enabled && var.allow_vpc_cidr ? 1 : 0
+
   name_from_descriptor = trim(replace(
-    lookup(module.this.descriptors, "module-resource-name", module.this.id), "/${module.this.delimiter}${module.this.delimiter}+/", ""
+    lookup(module.this.descriptors, var.descriptor_name, module.this.id), "/${module.this.delimiter}${module.this.delimiter}+/", module.this.delimiter
   ), module.this.delimiter)
+
+  allowed_cidrs = concat(
+    var.allow_vpc_cidr ? [one(data.aws_vpc.this).cidr_block] : [],
+    var.allowed_cidrs
+  )
 }
