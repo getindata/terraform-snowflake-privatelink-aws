@@ -7,7 +7,7 @@ data "aws_vpc" "this" {
 }
 
 resource "aws_security_group" "this" {
-  count = local.enabled
+  count = module.this.enabled ? 1 : 0
 
   vpc_id      = var.vpc_id
   description = "Security group for Snowflake AWS PrivateLink VPC Endpoint"
@@ -32,7 +32,7 @@ resource "aws_security_group" "this" {
 }
 
 resource "aws_vpc_endpoint" "this" {
-  count = local.enabled
+  count = module.this.enabled ? 1 : 0
 
   vpc_id              = var.vpc_id
   service_name        = data.snowflake_system_get_privatelink_config.this.aws_vpce_id
@@ -49,7 +49,7 @@ resource "aws_vpc_endpoint" "this" {
 }
 
 resource "aws_route53_zone" "this" {
-  count = local.enabled
+  count = module.this.enabled ? 1 : 0
 
   name    = "privatelink.snowflakecomputing.com"
   comment = "Snowflake AWS PrivateLink records"
@@ -62,7 +62,7 @@ resource "aws_route53_zone" "this" {
 }
 
 resource "aws_route53_record" "snowflake_private_link_url" {
-  count = local.enabled
+  count = module.this.enabled ? 1 : 0
 
   zone_id = one(aws_route53_zone.this[*].zone_id)
   name    = data.snowflake_system_get_privatelink_config.this.account_url
@@ -72,7 +72,7 @@ resource "aws_route53_record" "snowflake_private_link_url" {
 }
 
 resource "aws_route53_record" "snowflake_private_link_ocsp_url" {
-  count = local.enabled
+  count = module.this.enabled ? 1 : 0
 
   zone_id = one(aws_route53_zone.this[*].zone_id)
   name    = data.snowflake_system_get_privatelink_config.this.ocsp_url

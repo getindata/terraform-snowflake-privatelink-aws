@@ -1,6 +1,4 @@
 locals {
-  enabled = module.this.enabled ? 1 : 0
-
   vpc_cidr_enabled = module.this.enabled && var.allow_vpc_cidr ? 1 : 0
 
   name_from_descriptor = module.this.enabled ? trim(replace(
