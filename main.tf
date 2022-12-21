@@ -37,7 +37,7 @@ resource "aws_vpc_endpoint" "this" {
   vpc_id              = var.vpc_id
   service_name        = data.snowflake_system_get_privatelink_config.this.aws_vpce_id
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [one(aws_security_group.this).id]
+  security_group_ids  = [one(aws_security_group.this[*].id)]
   subnet_ids          = var.subnet_ids
   private_dns_enabled = false
 
@@ -64,7 +64,7 @@ resource "aws_route53_zone" "this" {
 resource "aws_route53_record" "snowflake_private_link_url" {
   count = local.enabled
 
-  zone_id = one(aws_route53_zone.this).zone_id
+  zone_id = one(aws_route53_zone.this[*].zone_id)
   name    = data.snowflake_system_get_privatelink_config.this.account_url
   type    = "CNAME"
   ttl     = "300"
@@ -74,7 +74,7 @@ resource "aws_route53_record" "snowflake_private_link_url" {
 resource "aws_route53_record" "snowflake_private_link_ocsp_url" {
   count = local.enabled
 
-  zone_id = one(aws_route53_zone.this).zone_id
+  zone_id = one(aws_route53_zone.this[*].zone_id)
   name    = data.snowflake_system_get_privatelink_config.this.ocsp_url
   type    = "CNAME"
   ttl     = "300"
