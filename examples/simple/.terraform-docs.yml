@@ -2,9 +2,7 @@ formatter: "md tbl" # this is required
 
 version: ">= 0.14"
 
-recursive:
-  enabled: true
-  path: ./examples
+header-from: main.tf
 
 sections:
   hide: []
