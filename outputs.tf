@@ -37,7 +37,7 @@ output "snowflake_privatelink_url" {
   description = "URL to access Snowflake using AWS PrivateLink"
   value = {
     fqdn = one(resource.aws_route53_record.snowflake_private_link_url[*].fqdn)
-    url  = "https://${one(resource.aws_route53_record.snowflake_private_link_url[*].fqdn)}"
+    url  = module.this.enabled ? "https://${one(resource.aws_route53_record.snowflake_private_link_url[*].fqdn)}" : null
   }
 }
 
