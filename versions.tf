@@ -5,9 +5,5 @@ terraform {
       source  = "Snowflake-Labs/snowflake"
       version = "~> 0.47"
     }
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
   }
 }
