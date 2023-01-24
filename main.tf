@@ -1,4 +1,6 @@
-data "snowflake_system_get_privatelink_config" "this" {}
+data "snowflake_system_get_privatelink_config" "this" {
+  count = module.this.enabled ? 1 : 0
+}
 
 data "aws_vpc" "this" {
   count = local.vpc_cidr_enabled
@@ -35,7 +37,7 @@ resource "aws_vpc_endpoint" "this" {
   count = module.this.enabled ? 1 : 0
 
   vpc_id              = var.vpc_id
-  service_name        = data.snowflake_system_get_privatelink_config.this.aws_vpce_id
+  service_name        = one(data.snowflake_system_get_privatelink_config.this[*].aws_vpce_id)
   vpc_endpoint_type   = "Interface"
   security_group_ids  = [one(aws_security_group.this[*].id)]
   subnet_ids          = var.subnet_ids
@@ -65,7 +67,7 @@ resource "aws_route53_record" "snowflake_private_link_url" {
   count = module.this.enabled ? 1 : 0
 
   zone_id = one(aws_route53_zone.this[*].zone_id)
-  name    = data.snowflake_system_get_privatelink_config.this.account_url
+  name    = one(data.snowflake_system_get_privatelink_config.this[*].account_url)
   type    = "CNAME"
   ttl     = "300"
   records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]
@@ -75,7 +77,7 @@ resource "aws_route53_record" "snowflake_private_link_ocsp_url" {
   count = module.this.enabled ? 1 : 0
 
   zone_id = one(aws_route53_zone.this[*].zone_id)
-  name    = data.snowflake_system_get_privatelink_config.this.ocsp_url
+  name    = one(data.snowflake_system_get_privatelink_config.this[*].ocsp_url)
   type    = "CNAME"
   ttl     = "300"
   records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]
