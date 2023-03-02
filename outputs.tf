@@ -47,3 +47,24 @@ output "snowflake_privatelink_ocsp_url" {
     fqdn = one(resource.aws_route53_record.snowflake_private_link_ocsp_url[*].fqdn)
   }
 }
+
+output "snowflake_regionless_private_link_account_url" {
+  description = "URL to access Snowflake account using AWS PrivateLink without specifying AWS region"
+  value = {
+    fqdn = one(resource.aws_route53_record.snowflake_regionless_private_link_account_url[*].fqdn)
+    url  = module.this.enabled && local.snowflake_account != null ? "https://${one(resource.aws_route53_record.snowflake_regionless_private_link_account_url[*].fqdn)}" : null
+  }
+}
+
+output "snowflake_regionless_private_link_snowsight_url" {
+  description = "URL to access Snowsight UI using AWS PrivateLink without specifying AWS region"
+  value = {
+    fqdn = one(resource.aws_route53_record.snowflake_regionless_private_link_snowsight_url[*].fqdn)
+    url  = module.this.enabled && local.snowflake_account != null ? "https://${one(resource.aws_route53_record.snowflake_regionless_private_link_snowsight_url[*].fqdn)}" : null
+  }
+}
+
+output "snowflake_additional_dns_records" {
+  description = "List of additional DNS records added to `.privatelink.snowflakecomputing.com` hosted zone"
+  value       = [for r in resource.aws_route53_record.snowflake_additional_dns_records : r.fqdn]
+}
