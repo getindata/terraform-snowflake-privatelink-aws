@@ -64,6 +64,8 @@ more information can be found in Snowflake Documentation -
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_account_name"></a> [account\_name](#input\_account\_name) | Name of the Snowflake account, used to create regionless privatelink fqdns | `string` | `null` | no |
+| <a name="input_additional_dns_records"></a> [additional\_dns\_records](#input\_additional\_dns\_records) | List of additional Route53 records to be added to local `privatelink.snowflakecomputing.com` hosted zone that points to Snowflake VPC endpoint. | `list(string)` | `[]` | no |
 | <a name="input_additional_tag_map"></a> [additional\_tag\_map](#input\_additional\_tag\_map) | Additional key-value pairs to add to each map in `tags_as_list_of_maps`. Not added to `tags` or `id`.<br>This is for some rare cases where resources want additional configuration of tags<br>and therefore take a list of maps with tag key, value, and additional configuration. | `map(string)` | `{}` | no |
 | <a name="input_allow_vpc_cidr"></a> [allow\_vpc\_cidr](#input\_allow\_vpc\_cidr) | Whether allow access to the Snowflake PrivateLink endpoint from the whole VPC | `bool` | `true` | no |
 | <a name="input_allowed_cidrs"></a> [allowed\_cidrs](#input\_allowed\_cidrs) | List of subnet CIDRs that will be allowed to access Snowflake endpoint via PrivateLink | `list(string)` | `[]` | no |
@@ -81,6 +83,7 @@ more information can be found in Snowflake Documentation -
 | <a name="input_labels_as_tags"></a> [labels\_as\_tags](#input\_labels\_as\_tags) | Set of labels (ID elements) to include as tags in the `tags` output.<br>Default is to include all labels.<br>Tags with empty values will not be included in the `tags` output.<br>Set to `[]` to suppress all generated tags.<br>**Notes:**<br>  The value of the `name` tag, if included, will be the `id`, not the `name`.<br>  Unlike other `null-label` inputs, the initial setting of `labels_as_tags` cannot be<br>  changed in later chained modules. Attempts to change it will be silently ignored. | `set(string)` | <pre>[<br>  "default"<br>]</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | ID element. Usually the component or solution name, e.g. 'app' or 'jenkins'.<br>This is the only ID element not also included as a `tag`.<br>The "name" tag is set to the full `id` string. There is no tag with the value of the `name` input. | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | ID element. Usually an abbreviation of your organization name, e.g. 'eg' or 'cp', to help ensure generated IDs are globally unique | `string` | `null` | no |
+| <a name="input_organisation_name"></a> [organisation\_name](#input\_organisation\_name) | Name of the organisation, where the Snowflake account is created, used to create regionless privatelink fqdns | `string` | `null` | no |
 | <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Terraform regular expression (regex) string.<br>Characters matching the regex will be removed from the ID elements.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | <a name="input_stage"></a> [stage](#input\_stage) | ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of AWS Subnet IDs where Snowflake AWS PrivateLink Endpoint interfaces will be created | `list(string)` | n/a | yes |
@@ -100,8 +103,11 @@ more information can be found in Snowflake Documentation -
 |------|-------------|
 | <a name="output_dns_private_zone"></a> [dns\_private\_zone](#output\_dns\_private\_zone) | Details of Route53 private hosted zone created for Snowflake PrivateLink |
 | <a name="output_security_group"></a> [security\_group](#output\_security\_group) | Details of security group assigned to Snowflake AWS PrivateLink VPC Endpoint |
+| <a name="output_snowflake_additional_dns_records"></a> [snowflake\_additional\_dns\_records](#output\_snowflake\_additional\_dns\_records) | List of additional DNS records added to `.privatelink.snowflakecomputing.com` hosted zone |
 | <a name="output_snowflake_privatelink_ocsp_url"></a> [snowflake\_privatelink\_ocsp\_url](#output\_snowflake\_privatelink\_ocsp\_url) | URL to access Snowflake OCSP endpont using AWS PrivateLink |
 | <a name="output_snowflake_privatelink_url"></a> [snowflake\_privatelink\_url](#output\_snowflake\_privatelink\_url) | URL to access Snowflake using AWS PrivateLink |
+| <a name="output_snowflake_regionless_private_link_account_url"></a> [snowflake\_regionless\_private\_link\_account\_url](#output\_snowflake\_regionless\_private\_link\_account\_url) | URL to access Snowflake account using AWS PrivateLink without specifying AWS region |
+| <a name="output_snowflake_regionless_private_link_snowsight_url"></a> [snowflake\_regionless\_private\_link\_snowsight\_url](#output\_snowflake\_regionless\_private\_link\_snowsight\_url) | URL to access Snowsight UI using AWS PrivateLink without specifying AWS region |
 | <a name="output_vpc_endpoint"></a> [vpc\_endpoint](#output\_vpc\_endpoint) | Details created Snowflake AWS PrivateLink VPC Endpoint |
 
 ## Providers
@@ -123,8 +129,11 @@ more information can be found in Snowflake Documentation -
 
 | Name | Type |
 |------|------|
+| [aws_route53_record.snowflake_additional_dns_records](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.snowflake_private_link_ocsp_url](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.snowflake_private_link_url](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.snowflake_regionless_private_link_account_url](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.snowflake_regionless_private_link_snowsight_url](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_security_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_vpc_endpoint.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |

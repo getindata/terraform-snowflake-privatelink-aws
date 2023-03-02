@@ -3,7 +3,7 @@ data "snowflake_system_get_privatelink_config" "this" {
 }
 
 data "aws_vpc" "this" {
-  count = local.vpc_cidr_enabled
+  count = local.vpc_cidr_enabled ? 1 : 0
 
   id = var.vpc_id
 }
@@ -78,6 +78,36 @@ resource "aws_route53_record" "snowflake_private_link_ocsp_url" {
 
   zone_id = one(aws_route53_zone.this[*].zone_id)
   name    = one(data.snowflake_system_get_privatelink_config.this[*].ocsp_url)
+  type    = "CNAME"
+  ttl     = "300"
+  records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]
+}
+
+resource "aws_route53_record" "snowflake_regionless_private_link_account_url" {
+  count = module.this.enabled && local.snowflake_account != null ? 1 : 0
+
+  zone_id = one(aws_route53_zone.this[*].zone_id)
+  name    = "${local.snowflake_account}.privatelink.snowflakecomputing.com"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]
+}
+
+resource "aws_route53_record" "snowflake_regionless_private_link_snowsight_url" {
+  count = module.this.enabled && local.snowflake_account != null ? 1 : 0
+
+  zone_id = one(aws_route53_zone.this[*].zone_id)
+  name    = "app-${local.snowflake_account}.privatelink.snowflakecomputing.com"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]
+}
+
+resource "aws_route53_record" "snowflake_additional_dns_records" {
+  for_each = module.this.enabled ? toset(var.additional_dns_records) : []
+
+  zone_id = one(aws_route53_zone.this[*].zone_id)
+  name    = each.key
   type    = "CNAME"
   ttl     = "300"
   records = [one(aws_vpc_endpoint.this).dns_entry[0]["dns_name"]]

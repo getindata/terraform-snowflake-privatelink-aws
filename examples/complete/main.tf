@@ -52,6 +52,12 @@ module "snowflake_privatelink_aws" {
   subnet_ids     = [resource.aws_subnet.this.id]
   allowed_cidrs  = ["10.10.0.0/16"]
   allow_vpc_cidr = true
+
+  organisation_name = "snoworg"
+  account_name      = "snowflake_tst"
+  additional_dns_records = [
+    "additional.dns.privatelink.snowflakecomputing.com"
+  ]
 }
 
 # Example CloudWatch log group for Route53 zone
