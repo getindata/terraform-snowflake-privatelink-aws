@@ -65,7 +65,7 @@ resource "aws_cloudwatch_log_group" "this" {
   #checkov:skip=CKV_AWS_158:Not in the scope of this example
 
   name              = "/aws/route53/${module.snowflake_privatelink_aws.dns_private_zone.name}"
-  retention_in_days = 30
+  retention_in_days = 365
 }
 
 # Example CloudWatch log resource policy to allow Route53 to write logs
